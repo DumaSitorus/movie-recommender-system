@@ -296,7 +296,9 @@ Selanjutnya, untuk memperoleh rekomendasi film maka digunakan fungsi `model.pred
 
 Berikut adalah hasil Top-N salah satu hasil rekomendasi yang diberikan untuk user 230.
 
-Dari hasil tersebut, terlihat bahwa model telah berhasil memberikan daftar rekomendasi beberapa film yang belum pernah ditonton oleh pengguna berdasarkan rating pengguna terhadap film sebelumnya.
+<img width="514" alt="cf-rec-result" src="https://github.com/user-attachments/assets/ac9a884c-0da0-45fc-b7b2-72ba67d2d798" />
+
+Dari hasil tersebut, terlihat bahwa model telah berhasil memberikan daftar rekomendasi beberapa film yang belum pernah ditonton oleh pengguna berdasarkan rating pengguna terhadap film sebelumnya. Pada hasil yang diberikan tidak menampilkan Top-10 melainkan hanya 3 saja, ini kemungkinan terjadi karena film yang yang direkomendasikan telah ditonton sebelumnya oleh pengguna tersebut.
 
 Adapun kelebihan dan kekurangan yang dapat dipertimbangkan dalam pemilihan pendekatan collaborative filtering adalah sebagai berikut:
 **1. Kelebihan**
