@@ -55,12 +55,10 @@ Dataset movie recommender terdiri dari atas 2 file terpisah yaitu movie dan rati
 ### Univariate Exploratory Data Analysis untuk Data Movie
 
 Informasi data:
-
-<img width="215" alt="info-movie" src="https://github.com/user-attachments/assets/78d84435-a65f-4980-8fa4-f3264c3d37c0" />
+![info-movie](https://github.com/user-attachments/assets/78d84435-a65f-4980-8fa4-f3264c3d37c0)
 
 Sample data:
-
-<img width="433" alt="sample-movie" src="https://github.com/user-attachments/assets/5ba40afd-bfa6-4592-8776-4eb61f7950a2" />
+![sample-movie](https://github.com/user-attachments/assets/5ba40afd-bfa6-4592-8776-4eb61f7950a2)
 
 Data `movie` terdiri dari tiga buah kolom yaitu:
 1. `movieId`
@@ -79,20 +77,16 @@ Data `movie` terdiri dari tiga buah kolom yaitu:
 
 Berdasarkan hasil analisis tersebut, diperlukan perbaikan untuk data movie sebagai berikut:
 1. Data pada kolom `title` perlu dipisahkan antara judul dengan tahun tayang agar tidak memberikan representasi yang berbeda pada dua atau lebih film yang sama dengan tahun tayang yang berbeda ketika diterapkan TF-IDF.
-
 2. Perlu perbaikan pada salah satu genre yaitu Sci-Fi yang merujuk pada genre Science Fiction. Penggunaan tanda hubungan (karakter '-') dapat memberikan representasi yang berbeda pada dua kata yaitu Sci dan Fi pada saat penggunaan TF-IDF yang menganggap karakter '-' sebagai pemisah antar kata.
-
 3. Diperlukan penanganan pada data movie dengan genre yang kosong atau berikan `(no genres listed)`. Solusi yang dapat diberikan dapat berupa drop data jika data tidak terlalu banyak.
 
 ### Univariate Exploratory Data Analysis untuk Data Rating
 
 Informasi data:
-
-<img width="236" alt="info-rating" src="https://github.com/user-attachments/assets/9046bf0e-dc14-4f31-be0f-e695529459cc"/>
+![info-rating](https://github.com/user-attachments/assets/9046bf0e-dc14-4f31-be0f-e695529459cc)
 
 Sample data:
-
-<img width="253" alt="sample-rating" src="https://github.com/user-attachments/assets/0385f56b-0586-4194-b74c-fb5d9fda6bb9"/>
+![sample-rating](https://github.com/user-attachments/assets/0385f56b-0586-4194-b74c-fb5d9fda6bb9)
 
 Data `rating` terdiri dari empat buah kolom yaitu:
 1. `userId`
@@ -120,93 +114,110 @@ Berdasarkan hasil analisis tersebut, tidak terdapat permasalahan dalam data rati
 ## Data Preparation
 Tahap data preparation bertujuan untuk mempersiapkan data agar lebih bersih dan siap untuk digunakan dalam membangung sistem rekomendasi. Berikut adalah langkah yang dilakukan pada tahapan data preparation:
 1. Merging dan cleaning data movie dan rating
-
 Menggabungkan tabel rating dengan tabel movie berdasarkan movieId ke dalam sebuah dataframe bernama `df`. `df` kini memiliki 6 buah fitur yaitu `userId`, `movieId`, `rating`, `timestamp`, `title` dan `genres`. Jumlah data pada dataframe ini sebanyak 100836 buah data.
 Setelah memperoleh dataframe yang memuat informasi rating pengguna terhadap film, dilakukan pengecekan apakah terdapat missing value, duplikasi data, maupun invalid data dalam dataframe tersebut. 
 Data set cukup bersih dimana tidak terdapat missing value dan juga duplikasi data. Namun pada kolom genre terdapat data dengan nilai `(no genres listed)` sebanyak 47 buah data. Value ini tidak memberikan informasi apapun untuk genre sebuah film sehingga sebenarnya dapat dianggap sebagai missing value. Penanganan yang dilakukan yaitu drop data. Teknik ini dipilih karena mengingat data tersebut cukup sedikit dibandingkan jumlah keseluruhan data sehingga tidak mengganggu pola dalam data.
 
-<img width="626" alt="merging" src="https://github.com/user-attachments/assets/9e3044ce-8d6b-4e8b-b36e-68b402a1b16a" />
+![merging](https://github.com/user-attachments/assets/9e3044ce-8d6b-4e8b-b36e-68b402a1b16a)
 
 2. Penanganan kolom `title`
-
 Berdasarkan hasil analisis pada tahap exploratory data, kolom title memiliki struktur `Judul film + (tahun tayang)`. Sehingga perlu untuk memisahkan kedua bagian tersebut dengan menggunakan *Regular Expression*. Hasil penanganan kolom `title` akan menyimpan `Judul film` dalam kolom title dan tahun tayang dimuat pada kolom `year`. Tahapan ini menjadi penting agar data tidak memberikan representasi yang berbeda pada dua atau lebih film yang sama dengan tahun tayang yang berbeda ketika diterapkan TF-IDF.
     
-<img width="535" alt="re-title" src="https://github.com/user-attachments/assets/fc670917-848a-48b4-86d5-238f0b281f0d" />
+![re-title](https://github.com/user-attachments/assets/fc670917-848a-48b4-86d5-238f0b281f0d)
 
 3. Penanganan kolom `genre`
-
 Terdapat dua hal yang akan ditangani pada kolom genres yaitu penanganan karakter '|' dan genre value 'Sci-Fi'. Teknik yang digunakan dalam penanganan permasalahan ini yaitu *Regular Expression*. *Regular Expression* akan menemukan karakter atau teks dan diganti dengan nilai yang diinginkan.
 Karakter '|' digunakan sebagai pemisah antara genre dari film dalam data. karakter '|' akan diganti dengan karakter space (' ') sebagai pemisah antar data genre tersebut.
 Teks 'Sci-Fi' akan diganti nilainya menjadi 'SciFi' hal ini karena teks semula akan memberikan representasi yang berbeda karena akan dianggap sebagai 2 kata yaitu 'Sci' dan 'Fi' yang mana ini pastinya akan mempengaruhi perhitungan dalam menghasilkan rekomendasi berdasarkan kemiripan genre film.
 Hasil dari tahapan ini dapat dilihat pada gambar berikut.
 
-<img width="536" alt="re-genre" src="https://github.com/user-attachments/assets/ffe6a581-58e1-48aa-a4f5-792aeaf5f9ef" />
+![re-genre](https://github.com/user-attachments/assets/ffe6a581-58e1-48aa-a4f5-792aeaf5f9ef)
 
 4. Cleaning Data Movie
-
 Data movie akan digunakan pada pembangunan sistem rekomendasi dengan pendekatan content based filtering. Sehingga dilakukan cleaning data movie dengan berbagai teknik yaitu drop data pada kolom genre yang bernilai `(no genres listed)` dan menggunakan *regular expression* untuk memisahkan judul dengan tahun,  mengganti karakter '|' dan teks 'Sci-Fi'. Alasan cleaning data movie dan penggunaan teknik preparation tersebut sama dengan pada poin sebelumnya saat menangani data hasil merging.
 
-## Modeling and Result
+5. Menyiapkan data movie dan TF-IDF Vectorizer
+Pada Pengambangan sistem rekomendasi dengan pendekatan content based filtering data yang diperlukan perlu didefenisikan dan dilakukan perihitungan TF-IDF Vectorizer. Berikut adalah tahap preparation datanya:
+    1. Menyiapkan Data
+    Data yang digunakan pada pengembangan sistem rekomendasi ini akan mengambil data yang telah dibersihkan pada tahap preparation data dan menyimpannya ke dalam dataframe bernama `data`. Data ini dipilih untuk digunakan karena kita ingin mempertimbangkan rekomendasi film berdasarkan kemiripan genres antar film.
 
+    ![cbf-prep-data](https://github.com/user-attachments/assets/524bf4ed-aa30-4d0c-88e6-f8d18139c23d)
+    
+    2. TF-IDF Vectorizer
+    TF-IDF Vectorizer dilakukan terhadap data movie untuk menghasilkan matriks bobot untuk setiap kata penting. 
+    Term Frequency (TF) mengukur seberapa sering suatu genre muncul dalam deskripsi atau atribut konten sebuah film. Genre yang lebih sering disebut atau terkait dalam suatu film diberikan bobot lebih tinggi, karena dianggap lebih representatif terhadap isi film tersebut.
+
+    ![TF-Dicoding](https://assets.cdn.dicoding.com/original/academy/dos-b4564ae6e41e656876e253554497585c20240630154540.jpeg)
+
+    Inverse Document Frequency (IDF) mengukur seberapa jarang suatu genre muncul di seluruh koleksi film. Genre yang muncul di lebih sedikit film dianggap lebih spesifik atau unik, dan diberikan bobot lebih tinggi karena lebih informatif dalam membedakan film satu dengan yang lain.
+
+    ![IDF-Dicoding](https://assets.cdn.dicoding.com/original/academy/dos-0b50bfccabb18a7f280a9058df732f8020240630154739.jpeg)
+
+    Sehingga secara keseluruhan perhitungan TF-IDF dirumuskan sebagai berikut:
+    ![TF-IDF-Dicoding](https://assets.cdn.dicoding.com/original/academy/dos-4732aee49bbc9a24fb49616c916d98d720240630154923.jpeg)
+
+    Perhitungan TF-IDF dalam sistem rekomendasi film yang dikembangkan diterapkan dengan menggunakan `TfidfVectorizer()` sehingga dapat menghasilkan matriks TF-IDF dan disimpan ke dalam dataframe yang dapat dilihat pada gambar berikut.
+
+    ![matrix-tfidf](https://github.com/user-attachments/assets/e47bab2a-cbdd-4abe-8a9e-e6256534b93e)
+
+    Output diatas merupakan hasil matriks tf-idf yang dihitung sebelumnya. baris mewakili item atau film sedangkan kolom berisikan kata-kata unik dari genres. Nilai yang terdapat pada baris dan kolom tertentu merupakan representasi seberapa penting genre dalam sebuah film. Jadi intinya hasil perhitungan TF-IDF memberikan representasi numerik yang mengindikasikan pentingnya kata-kata dalam judul atau genre secara relatif.
+
+6. Menyiapkan data df dan Melakukan Maping Id, Pengacakan Dataset, Normalisasi Rating, Data Splitting
+Persiapan data ini bertujuan untuk menghasilkan data yang siap untuk digunakan dalam melatih model sistem rekomendasi menggunakan pendekatan collaborative filtering. Berikut adalah langkah persiapan data df:
+    1. Data Preparation
+    Data yang digunakan pada pengembangan sistem rekomendasi akan menggunakan data yang telah dibersihkan pada tahap preparation data yaitu `df`. Data ini dipilih karena kita akan menggunakan historis interaksi (rating) pengguna terhadap item (film).
+    Data `df` memiliki fitur userId dan movieId dalam bentuk integer yang tidak berurutan karena telah melalui tahapan preprocessing dan preparation. Sehingga perlu dilakukan tahapan encoding agar data tersebut terindeks dengan baik. Hasil encoding data adalah sebagai berikut:
+    
+    Data hasil encoding tersebut dimuat ke dalam kolom baru di data frame sebagai `user` dan `movie` menggunakan teknik mapping.  Dengan dapat dilakukan perhitungan jumlah pengguna, jumlah movie, rating tertinggi dan terendah.
+    - Number of User: 610
+    - Number of movie: 9724
+    - Min Rating: 0.5 
+    - Max Rating: 5.0'
+    
+    Melalui tahapan persiapan ini, data semakin siap untuk masuk ke tahapan modeling.
+    
+    2. Data Splitting
+    Tahapan ini bertujuan untuk melakukan pembagian data menjadi data training dan validasi. Namun, terlebih dahulu akan dilakukan pengacakan data agar distribusinya menjadi random. Hal ini membantu model untuk lebih handal dalam menemukan pola pada data.
+    Pada tahapan data splitting akan dilakukan dengan rangkaian langkah berikut:
+        - memetakan (mapping) data user dan movie menjadi satu value terlebih dahulu
+        - membuat rating dalam skala 0 sampai 1 agar mudah dalam melakukan proses training. 
+        - pembagian data train dan validasi dengan komposisi 80:20.
+    
+    Hasil pembagian akan tampak sebagai berikut:
+    
+    ![split-data](https://github.com/user-attachments/assets/f94c07e4-19b2-4e64-849e-ea20fd45006d)
+        
+    keseluruhan data akan dibagi menjadi X dan y. X yaitu vektor pertama akan berisi data user dan movie sedangkan y yaitu vektor kedua akan berisi berisi data rating pengguna terhadap movie. Pembagian data train dan test menggunakan rasio 80/20.
+
+## Modeling and Result
 Tahapan ini membahas mengenai model sistem rekomendasi yang dikembangkan beserta top-n hasil rekomendasi film menggunakan pendekatan content based filtering dan collaborative filtering. 
 
 ### Pengembangan Sistem Rekomendasi dengan Content based Filtering
-
 Content-Based Filtering (CBF) adalah pendekatan dalam sistem rekomendasi yang menggunakan karakteristik atau fitur dari item serta profil preferensi pengguna untuk memberikan rekomendasi. Item-item direkomendasikan kepada pengguna berdasarkan kesamaan antara item yang ada dan item yang disukai pengguna sebelumnya. Ini berarti jika seorang pengguna menyukai film tertentu, sistem akan mencoba merekomendasikan film lain yang memiliki fitur atau karakteristik yang mirip dengan item yang disukai tersebut baik melalui aktor yang berperan maupun genre film tersebut.
 ![ilustrasi-dicoding](https://assets.cdn.dicoding.com/original/academy/dos-619b3f2f34202af2c22998bd0dddc92420240625163549.jpeg)
 
 Pada proyek ini, sistem rekomendasi dengan content based filtering dibangun dengan tahapan sebagai berikut:
-1. Menyiapkan Data
-
-Data yang digunakan pada pengembangan sistem rekomendasi ini akan mengambil data yang telah dibersihkan pada tahap preparation data dan menyimpannya ke dalam dataframe bernama `data`. Data ini dipilih untuk digunakan karena kita ingin mempertimbangkan rekomendasi film berdasarkan kemiripan genres antar film.
-
-<img width="454" alt="cbf-prep-data" src="https://github.com/user-attachments/assets/524bf4ed-aa30-4d0c-88e6-f8d18139c23d" />
-
-2. TF-IDF Vectorizer
-
-TF-IDF Vectorizer dilakukan terhadap data movie untuk menghasilkan matriks bobot untuk setiap kata penting. 
-
-Term Frequency (TF) mengukur seberapa sering suatu genre muncul dalam deskripsi atau atribut konten sebuah film. Genre yang lebih sering disebut atau terkait dalam suatu film diberikan bobot lebih tinggi, karena dianggap lebih representatif terhadap isi film tersebut.
-
-![TF-Dicoding](https://assets.cdn.dicoding.com/original/academy/dos-b4564ae6e41e656876e253554497585c20240630154540.jpeg)
-
-Inverse Document Frequency (IDF) mengukur seberapa jarang suatu genre muncul di seluruh koleksi film. Genre yang muncul di lebih sedikit film dianggap lebih spesifik atau unik, dan diberikan bobot lebih tinggi karena lebih informatif dalam membedakan film satu dengan yang lain.
-
-![IDF-Dicoding](https://assets.cdn.dicoding.com/original/academy/dos-0b50bfccabb18a7f280a9058df732f8020240630154739.jpeg)
-
-Sehingga secara keseluruhan perhitungan TF-IDF dirumuskan sebagai berikut:
-![TF-IDF-Dicoding](https://assets.cdn.dicoding.com/original/academy/dos-4732aee49bbc9a24fb49616c916d98d720240630154923.jpeg)
-
-Perhitungan TF-IDF dalam sistem rekomendasi film yang dikembangkan diterapkan dengan menggunakan `TfidfVectorizer()` sehingga dapat menghasilkan matriks TF-IDF dan disimpan ke dalam dataframe yang dapat dilihat pada gambar berikut.
-
-<img width="1132" alt="matrix-tfidf" src="https://github.com/user-attachments/assets/e47bab2a-cbdd-4abe-8a9e-e6256534b93e" />
-
-Output diatas merupakan hasil matriks tf-idf yang dihitung sebelumnya. baris mewakili item atau film sedangkan kolom berisikan kata-kata unik dari genres. Nilai yang terdapat pada baris dan kolom tertentu merupakan representasi seberapa penting genre dalam sebuah film. Jadi intinya hasil perhitungan TF-IDF memberikan representasi numerik yang mengindikasikan pentingnya kata-kata dalam judul atau genre secara relatif.
-
-3. Cosine Similarity
-
+1. Cosine Similarity
 Cosine similarity mengukur kesamaan antara dua vektor dan menentukan apakah kedua vektor tersebut menunjuk ke arah yang sama. Ia menghitung sudut cosinus antara dua vektor. Semakin kecil sudut cosinus, semakin besar nilai cosine similarity.  Cosine similarity dirumuskan sebagai berikut.
 ![Cos-Sim-Dicoding](https://assets.cdn.dicoding.com/original/academy/dos:784efd3d2ba47d47153b050526150ba920210910171725.jpeg)
 
 Dalam proyek ini, Cosine similarity akan menggunakan hasil dari perhitungan TF-IDF untuk menghasilkan matriks numerik berdimensi `jumlah film x jumlah genre unik`. Setiap baris merepresentasikan sebuah film dan setiap kolom menunjukkan bobot TF-IDF dari masing-masing genre pada film tersebut. Matriks ini berfungsi sebagai representasi fitur konten dari setiap film dalam bentuk vektor.
 
-<img width="619" alt="cos-sim" src="https://github.com/user-attachments/assets/9c89c5dc-bf12-4d05-9e4c-4e08125cfc1f" />
+![cos-sim](https://github.com/user-attachments/assets/9c89c5dc-bf12-4d05-9e4c-4e08125cfc1f)
 
 Hasil cosine similarity ini digunakan sebagai dasar untuk merekomendasikan film-film lain yang paling mirip secara konten terhadap film yang sedang dilihat pengguna.
 
-4. Mendapatkan Rekomendasi
-
+2. Mendapatkan Rekomendasi
 Setelah dilakukan proses perhitungan kemiripan antar film dengan TF-IF dan Cosine Similarity, maka berikutnya adalah mengimplementasikan cara untuk mendapatkan daftar rekomendasi film yang mirip dengan sebuah film.
-
 Pertama, akan dibuat fungsi `movie_recommendations` dengan beberapa parameter sebagai berikut:
-movie_title : Judul Film (index kemiripan dataframe).
-Similarity_data : Dataframe mengenai similarity yang telah kita definisikan sebelumnya.
-Items : Nama dan fitur yang digunakan untuk mendefinisikan kemiripan, dalam hal ini adalah ‘movie_title’ dan ‘genres’.
-k : Banyak rekomendasi yang ingin diberikan.
+    - movie_title : Judul Film (index kemiripan dataframe).
+    - Similarity_data : Dataframe mengenai similarity yang telah kita definisikan sebelumnya.
+    - Items : Nama dan fitur yang digunakan untuk mendefinisikan kemiripan, dalam hal ini adalah ‘movie_title’ dan ‘genres’.
+    - k : Banyak rekomendasi yang ingin diberikan.
 
 Setelah fungsi berhasil diimplementasikan, maka dapat langsung digunakan untuk menghasilkan rekomendasi film serupa. Berikut adalah hasil rekomendasi yang dihasilkan oleh fungsi.
 
-<img width="419" alt="cbf-rec-result" src="https://github.com/user-attachments/assets/3aa8ea60-912a-4efa-9a76-15855c70899a" />
+![cbf-rec-result](https://github.com/user-attachments/assets/3aa8ea60-912a-4efa-9a76-15855c70899a)
 
 Hasil rekomendasi film diperoleh dengan terlebih dahulu memanggil fungsi `movie_recommendations('Kung Fu Panda')` yang akan mengembalikan top-N recommendation yang mirip dengan judul movie yang diinputkan. Fungsi juga akan melakukan Drop movie title yang diinputkan pada fungsi agar judul movie yang dicari tidak muncul dalam daftar rekomendasi. Top-5 hasil rekomendasi telah berhasil dikembalikan oleh fungsi dimana hasil tersebut memiliki genre yang sangat mirip dengan film 'Kung Fu Panda'.
 
@@ -222,41 +233,13 @@ Adapun kelebihan dan kekurangan yang dapat dipertimbangkan dalam pemilihan pende
 Collaborative filtering merupakan sebuah pendekatan yang menggunakan informasi dari aktivitas pengguna untuk memberikan rekomendasi. CF mencoba menemukan pola dan hubungan antara pengguna dan item. Terdapat 2 metode yang digunakan pada pendekatan ini yaitu model based (metode berbasis model machine learning) dan memory based (metode berbasis memori).
 ![CF-dicoding](https://assets.cdn.dicoding.com/original/academy/dos:756ce41a29e4e7b511a355fee284110320210910165836.jpeg)
 
-Pada pengembangan sistem rekomendasi film yang akan dikembangkan pada proyek ini menggunakan model based CF. Sehingga akan dilakukan pelatihan model untuk belajar representasi pengguna dan item. Adapun tahapan yang dilakukan yaitu:
-1. Data Preparation
-Data yang digunakan pada pengembangan sistem rekomendasi akan menggunakan data yang telah dibersihkan pada tahap preparation data yaitu `df`. Data ini dipilih karena kita akan menggunakan historis interaksi (rating) pengguna terhadap item (film).
-Data `df` memiliki fitur userId dan movieId dalam bentuk integer yang tidak berurutan karena telah melalui tahapan preprocessing dan preparation. Sehingga perlu dilakukan tahapan encoding agar data tersebut terindeks dengan baik. Hasil encoding data adalah sebagai berikut:
-
-Data hasil encoding tersebut dimuat ke dalam kolom baru di data frame sebagai `user` dan `movie` menggunakan teknik mapping.  Dengan dapat dilakukan perhitungan jumlah pengguna, jumlah movie, rating tertinggi dan terendah.
-- Number of User: 610
-- Number of movie: 9724
-- Min Rating: 0.5 
-- Max Rating: 5.0'
-
-Melalui tahapan persiapan ini, data semakin siap untuk masuk ke tahapan modeling.
-
-2. Data Splitting
-
-Tahapan ini bertujuan untuk melakukan pembagian data menjadi data training dan validasi. Namun, terlebih dahulu akan dilakukan pengacakan data agar distribusinya menjadi random. Hal ini membantu model untuk lebih handal dalam menemukan pola pada data.
-Pada tahapan data splitting akan dilakukan dengan rangkaian langkah berikut:
-    - memetakan (mapping) data user dan movie menjadi satu value terlebih dahulu
-    - membuat rating dalam skala 0 sampai 1 agar mudah dalam melakukan proses training. 
-    - pembagian data train dan validasi dengan komposisi 80:20.
-
-Hasil pembagian akan tampak sebagai berikut:
-
-<img width="551" alt="split-data" src="https://github.com/user-attachments/assets/f94c07e4-19b2-4e64-849e-ea20fd45006d" />
-
-    
-keseluruhan data akan dibagi menjadi X dan y. X yaitu vektor pertama akan berisi data user dan movie sedangkan y yaitu vektor kedua akan berisi berisi data rating pengguna terhadap movie. Pembagian data train dan test menggunakan rasio 80/20.
-
-3. Modelling
-
+Pada pengembangan sistem rekomendasi film yang akan dikembangkan pada proyek ini menggunakan model based CF. Sehingga akan dilakukan pelatihan model untuk belajar representasi pengguna dan item. Adapun proses yang dilakukan yaitu:
+1. Modelling
 Pada tahap ini, akan dibuat model yang akan menghitung skor kecocokan antara pengguna dan movie dengan teknik embedding. Pertama, akan dilakukan proses embedding terhadap data user dan movie. Selanjutnya, lakukan operasi perkalian dot product antara embedding user dan movie. Selain itu, dapat ditambahkan bias untuk setiap user dan resto. Skor kecocokan ditetapkan dalam skala [0,1] dengan fungsi aktivasi sigmoid.
-Pada Proyek ini akan dibuat kelas `RecommenderNet(tf.keras.Model)`.
-
+Pada Proyek ini akan dibuat kelas `RecommenderNet(tf.keras.Model)`. 
 Setelah fungsi telah berhasil diimplementasikan, dilakukan proses compile terhadap model dengan kode berikut:
     
+
     model = RecommenderNet(num_users, num_movie, 50) # inisialisasi model
     
     # model compile
@@ -279,15 +262,15 @@ Model tersebut menggunakan Binary Crossentropy untuk menghitung loss function, A
 
 Output dari pelatihan tersebut adalah sebagai berikut.
 
-<img width="971" alt="training-history" src="https://github.com/user-attachments/assets/989d3468-761e-424d-8613-d9558744aa66" />
+![training-history](https://github.com/user-attachments/assets/989d3468-761e-424d-8613-d9558744aa66)
 
-4. Plot RMSE
+2. Plot RMSE
 
 Untuk melihat visualisasi proses training maka dapat melakukan plot hasil perhitungan RMSE dengan library matplotlib. Hasil plot adalah sebagai berikut:
 
 ![plot-rmse](https://github.com/user-attachments/assets/73d87014-664c-47db-8cde-08d65e6f76a0)
 
-5. Mendapatkan Rekomendasi
+3. Mendapatkan Rekomendasi
 
 Pada tahapan ini, dilakukan percobaan untuk memperoleh hasil rekomendasi untuk sampel user. Hasil rekomendasi akan memberikan judul film yang pernah di rating dengan nilai tinggi oleh user tersebut sebagai film yang paling diminati, kemudian menampilkan rekomendasi film berdasarkan preferensi dan rating para pengguna. Rekomendasi film yang akan diberikan merupakan daftar film yang belum pernah di rating oleh pengguna.
 
@@ -295,8 +278,7 @@ Film yang belum pernah ditonton (dalam hal ini belum pernah diberikan rating) ol
 Selanjutnya, untuk memperoleh rekomendasi film maka digunakan fungsi `model.predict()` dari library Keras untuk memprediksi film rekomendasi berdasarkan interaksi pengguna (rating).
 
 Berikut adalah hasil Top-N salah satu hasil rekomendasi yang diberikan untuk user 230.
-
-<img width="514" alt="cf-rec-result" src="https://github.com/user-attachments/assets/ac9a884c-0da0-45fc-b7b2-72ba67d2d798" />
+![cf-rec-result](https://github.com/user-attachments/assets/ac9a884c-0da0-45fc-b7b2-72ba67d2d798)
 
 Dari hasil tersebut, terlihat bahwa model telah berhasil memberikan daftar rekomendasi beberapa film yang belum pernah ditonton oleh pengguna berdasarkan rating pengguna terhadap film sebelumnya. Pada hasil yang diberikan tidak menampilkan Top-10 melainkan hanya 3 saja, ini kemungkinan terjadi karena film yang yang direkomendasikan telah ditonton sebelumnya oleh pengguna tersebut.
 
@@ -316,30 +298,19 @@ Pada bagian ini, sistem rekomendasi yang telah berhasil dikembangkan akan dieval
 ### Evaluasi Sistem Rekomendasi Content Based Filtering
 Evaluasi untuk sistem rekomendasi dengan content based filtering dapat dilakukan dengan menggunakan berbagai macam metrik yang antara lain:
 1.  Precision@K
-
 Metrik ini akan mengukur apakah hasil rekomendasi yang diberikan benar-benar relevan dengan input dari segi kesamaan genre.
-
-<img width="586" alt="precision" src="https://github.com/user-attachments/assets/024affcd-0b3e-4286-bbd1-058fc87c5ae3" />
-
-- Pembilang: Jumlah film dalam rekomendasi dan memiliki genre yang sama dengan film input
-- Penyebut (K): Jumlah film yang direkomendasikan (misal: top-5)
+![precision](https://github.com/user-attachments/assets/024affcd-0b3e-4286-bbd1-058fc87c5ae3)
+    - Pembilang: Jumlah film dalam rekomendasi dan memiliki genre yang sama dengan film input
+    - Penyebut (K): Jumlah film yang direkomendasikan (misal: top-5)
 
 2.  Recall@K
-
 Metrik ini akan melakukan pengukuran seberapa banyak item (film) yang relevan (genre sama) yang direkomendasikan. Sesuai konteks projek ini Recall dapat dirumuskan sebagai berikut:
-
-<img width="568" alt="recall" src="https://github.com/user-attachments/assets/1522815e-2d43-4675-8a6b-467641d75db7" />
-
+![recall](https://github.com/user-attachments/assets/1522815e-2d43-4675-8a6b-467641d75db7)
 - K = Jumlah film yang direkomendasikan (misal: top-5)
 
-
-
 3.  F1-Score@K
-
 Metrik ini akan melakukan pengukuran dengan hasil kombinasi dari precision dan recall. 
-
-<img width="279" alt="F1-score" src="https://github.com/user-attachments/assets/a109a904-04ea-47a5-a132-8b1ed8445991" />
-
+![F1-score](https://github.com/user-attachments/assets/a109a904-04ea-47a5-a132-8b1ed8445991)
 - K = Jumlah film yang direkomendasikan (misal: top-5)
 
 Metrik pengukuran yang dapat diterapkan dalam evaluasi untuk kasus ini adalah Precision@K.
@@ -355,8 +326,7 @@ Dari data rekomendasi yang diberikan untuk film yang serupa dengan film input ya
 
 ### Evaluasi Sistem Rekomendasi collaborative Filtering
 RMSE (Root Mean Squared Error) adalah metrik evaluasi regresi yang mengukur rata-rata akar kuadrat dari selisih antara nilai yang diprediksi dan nilai sebenarnya. RMSE mengukur seberapa jauh prediksi sistem dari nilai rating sebenarnya. Formula perhitungan RMSE adalah sebagai berikut.
-
-<img width="219" alt="rmse" src="https://github.com/user-attachments/assets/45cc011d-09da-47e0-b986-c9cf0cba1309" />
+![rmse](https://github.com/user-attachments/assets/45cc011d-09da-47e0-b986-c9cf0cba1309)
 
 Keterangan:
 - n = Jumlah pasangan (user, film) yang sudah memberikan rating sebenarnya. Misalnya: 10.000 interaksi user-film.
